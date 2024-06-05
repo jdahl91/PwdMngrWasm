@@ -1,0 +1,49 @@
+﻿@page "/register"
+
+<div class="container-fluid flex-center">
+    <div>
+        <h2>Register</h2>
+        <EditForm Model="@RegisterForm" OnValidSubmit="RegisterClicked">
+            <DataAnnotationsValidator />
+            <div class="form-group">
+                <label class="form-label">Name</label>
+                <InputText @bind-Value="RegisterForm.Name" class="form-control"></InputText>
+            </div>
+            <div class="form-group mt-3">
+                <label class="form-label">Email</label>
+                <InputText @bind-Value="RegisterForm.Email" class="form-control"></InputText>
+            </div>
+            <div class="form-group mt-3">
+                <label class="form-label">Password</label>
+                <InputText type="password" @bind-Value="RegisterForm.Password" class="form-control"></InputText>
+            </div>
+            <div class="form-group mt-3">
+                <label class="form-label">Confirm Password</label>
+                <InputText type="password" @bind-Value="RegisterForm.ConfirmPassword" class="form-control"></InputText>
+            </div>
+            <div class="form-group mt-3">
+                <button class="btn btn-primary" type="submit">Register</button>
+            </div>
+            <ValidationSummary />
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    public RegisterDTO RegisterForm = new();
+
+    async Task RegisterClicked()
+    {
+        // RegistrationResponse response = await AccountService.RegisterAsync(Register);
+        // if (!response.Flag)
+        // {
+        //     await JS.InvokeVoidAsync("alert", response.Message);
+        //     Register = new();
+        //     return;
+        // }
+        // await JS.InvokeVoidAsync("alert", response.Message);
+        // Register = new();
+
+        // NavigationManager.NavigateTo("/", forceLoad: true);
+    }
+}
