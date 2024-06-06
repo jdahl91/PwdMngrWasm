@@ -53,7 +53,8 @@
         // NEED TO HANDLE THE REFRESH TOKEN maybe done above
 
         // JWT Hardcoded for testing
-        await customAuthenticationStateProvider.MarkUserAsAuthenticated("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJOYW1lIjoiSm9ha2ltIiwiRW1haWwiOiJqb2FraW1kYWhsQGdteC51cyIsIlJvbGUiOiJBZG1pbiJ9.xwehf7zL11t0lHZhSynNmeQsYZghMdDFoAWNPrYcfhM", "refresh-token-test");
+        // this happens here only in dev, we should make the call to MarkUserAsAuthenticated in the AuthenticationService.Login method
+        await customAuthenticationStateProvider.MarkUserAsAuthenticated("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJOYW1lIjoiSm9ha2ltIiwiRW1haWwiOiJqb2FraW1kYWhsQGdteC51cyIsIlJvbGUiOiJBZG1pbiJ9.xwehf7zL11t0lHZhSynNmeQsYZghMdDFoAWNPrYcfhM", "new-v9-refresh-token-test");
 
         NavigationManager.NavigateTo("/", forceLoad: false);
     }

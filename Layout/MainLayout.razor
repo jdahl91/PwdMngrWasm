@@ -14,15 +14,15 @@
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <NavMenu />
     </MudDrawer>
-    <MudMainContent>
+    <MudMainContent Style="display:flex;flex-direction:column;flex-start;margin:20px;">
         @Body
     </MudMainContent>
 </MudLayout>
 
 @code {
-    bool _drawerOpen = true;
-
-    void DrawerToggle()
+    // trying to set these properties as public static for the navmenu to access
+    public static bool _drawerOpen = true;
+    public static void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
     }

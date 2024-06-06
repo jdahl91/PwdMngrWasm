@@ -70,6 +70,7 @@
         // there should also be a call to the server to invalidate the refresh token
         // await authenticationService.LogoutAsync();
 
+        MainLayout.DrawerToggle();
         navigationManager.NavigateTo("/", forceLoad: false);
     }
 }

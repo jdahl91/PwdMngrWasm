@@ -19,21 +19,11 @@ namespace PwdMngrWasm.State
             _jsRuntime = jsRuntime;
         }
 
-        private async Task SetJwtToken()
-        {
-            _jwtToken = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
-        }
-
-        private async Task SetRefreshToken()
-        {
-            _refreshToken = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "refreshToken");
-        }
-
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             // for now this breaks the app if there is a mismatch between the token in the local storage and the token in the provider
             // lets reviw this later
-            // _jwtToken = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken") == _jwtToken ? _jwtToken : null;
+            _jwtToken = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
 
             if (string.IsNullOrEmpty(_jwtToken))
             {
@@ -82,5 +72,15 @@ namespace PwdMngrWasm.State
 
             return new ClaimsIdentity(claims, "jwt");
         }
+
+        //private async Task SetJwtToken()
+        //{
+        //    _jwtToken = await _jsRuntime.InvokeAsync<string>("localStorage.removeItem", "authToken");
+        //}
+
+        //private async Task SetRefreshToken()
+        //{
+        //    _refreshToken = await _jsRuntime.InvokeAsync<string>("localStorage.removeItem", "refreshToken");
+        //}
     }
 }

@@ -2,6 +2,100 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<MudText><h1>Welcome to PWM9</h1></MudText>
 
-Welcome to your new app.
+<AuthorizeView>
+    <NotAuthorized>
+        Please login to access your stored passwords.
+    </NotAuthorized>
+    <Authorized>
+        <MudTextField T="string" Label="Search" @bind-Value="@_searchText" @onblur="() => FilterEntries()"></MudTextField>
+        @* <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@SearchClicked">Search</MudButton> *@
+
+        <MudList>
+            @foreach (var entry in _filteredEntries)
+            {
+                <MudListItem>
+                    <MudStack>
+                        <MudButton OnClick="@((e) => OpenDialog(closeButton))" Color="Color.Primary">@entry.Name</MudButton>
+                        @entry.Url
+                    </MudStack>
+                </MudListItem>
+            }
+        </MudList>
+
+        <MudText>More text here!</MudText>
+
+        <MudPaper>
+            <MudText Typo="Typo.h6">This is a simple example of a MudBlazor app.</MudText>
+        </MudPaper>
+
+        <MudElement>
+            Some more stuff.
+        </MudElement>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    private string _searchText = string.Empty;
+    private List<PasswordEntry> _entries = GetHardcodedEntries();
+    private List<PasswordEntry> _filteredEntries = GetHardcodedEntries();
+
+    DialogOptions closeButton = new DialogOptions() { CloseButton = true };
+    // DialogOptions noHeader = new DialogOptions() { NoHeader = true };
+    // DialogOptions disableBackdropClick = new DialogOptions() { DisableBackdropClick = true };
+    // DialogOptions fullScreen = new DialogOptions() { FullScreen = true, CloseButton = true };
+    // DialogOptions topCenter = new DialogOptions() { Position = DialogPosition.TopCenter };
+
+    private void OpenDialog(DialogOptions options)
+    {
+        // TODO
+        // we need to pass the entry to the dialog
+        Dialog.Show<PasswordEntryDialog>("DialogHeader", options);
+    }
+
+    private static List<PasswordEntry> GetHardcodedEntries()
+    {
+        var entries = new List<PasswordEntry>();
+
+        for (int i = 1; i <= 20; i++)
+        {
+            entries.Add(new PasswordEntry
+                {
+                    EntryId = i,
+                    UserId = 1,
+                    Url = $"https://example.com/{i}",
+                    Name = $"Example {i}",
+                    Note = $"This is an example note for entry {i}.",
+                    Username = $"user{i}",
+                    Password = $"password{i}",
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now
+                });
+        }
+        return entries;
+    }
+
+    private void FilterEntries()
+    {
+        var searchText = _searchText.ToLower().Trim();
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            _filteredEntries = _entries;
+        }
+        else
+        {
+            _filteredEntries = _entries.Where(entry =>
+                //entry.EntryId.ToString().Contains(searchText) ||
+                //entry.UserId.ToString().Contains(searchText) ||
+                entry.Url!.ToLower().Contains(searchText) ||
+                entry.Name!.ToLower().Contains(searchText) // ||
+                //entry.Note!.ToLower().Contains(searchText) ||
+                //entry.Username!.ToLower().Contains(searchText) ||
+                //entry.Password!.ToLower().Contains(searchText) ||
+                //entry.CreatedAt.ToString().Contains(searchText) ||
+                //entry.UpdatedAt.ToString().Contains(searchText)
+            ).ToList();
+        }
+    }
+}
