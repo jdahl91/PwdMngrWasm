@@ -2,6 +2,19 @@
 {
     public class PasswordEntry
     {
+        public PasswordEntry() {}
+        public PasswordEntry(PasswordEntry entry)
+        {
+            this.EntryId = entry.EntryId;
+            this.UserId = entry.UserId;
+            this.Url = entry.Url;
+            this.Name = entry.Name;
+            this.Note = entry.Note;
+            this.Username = entry.Username;
+            this.Password = entry.Password;
+            this.CreatedAt = entry.CreatedAt;
+            this.UpdatedAt = entry.UpdatedAt;
+        }
         public int EntryId { get; set; }
         public int UserId { get; set; }
         public string? Url { get; set; }

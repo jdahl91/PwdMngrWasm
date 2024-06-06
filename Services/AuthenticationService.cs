@@ -27,7 +27,7 @@ namespace PwdMngrWasm.Services
 
         public async Task<LoginResponse> Login(LoginDTO form)
         {
-            //var response = await _httpClient.PostAsJsonAsync("api/auth/login", new { username, password });
+            //var response = await _httpClient.PostAsJsonAsync("https://example.com/api/auth/login", new { username, password });
             //if (!response.IsSuccessStatusCode) return false;
 
             //var token = await response.Content.ReadAsStringAsync();
@@ -40,7 +40,9 @@ namespace PwdMngrWasm.Services
 
         public async Task Logout()
         {
+            //var response = await _httpClient.PostAsJsonAsync("https://example.com/api/auth/logout");
             //await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", "authToken");
+
             //((CustomAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut();
             //_httpClient.DefaultRequestHeaders.Authorization = null;
         }

@@ -72,15 +72,5 @@ namespace PwdMngrWasm.State
 
             return new ClaimsIdentity(claims, "jwt");
         }
-
-        //private async Task SetJwtToken()
-        //{
-        //    _jwtToken = await _jsRuntime.InvokeAsync<string>("localStorage.removeItem", "authToken");
-        //}
-
-        //private async Task SetRefreshToken()
-        //{
-        //    _refreshToken = await _jsRuntime.InvokeAsync<string>("localStorage.removeItem", "refreshToken");
-        //}
     }
 }
