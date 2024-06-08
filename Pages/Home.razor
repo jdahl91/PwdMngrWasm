@@ -1,36 +1,40 @@
 ﻿@page "/"
+@using PwdMngrWasm.State
+@using System.Security.Claims
 
 <PageTitle>Home</PageTitle>
 
-<MudText><h1>Welcome to PWM9</h1></MudText>
-
 <AuthorizeView>
     <NotAuthorized>
-        Please login to access your stored passwords.
+        <MudText><h1>Welcome to PWM9</h1></MudText>
+        <MudText Typo="Typo.body1">Please login to access your stored passwords.</MudText>
     </NotAuthorized>
     <Authorized>
-        <!--// TODO Ensure filter function correctly filters the list-->
-        <MudTextField T="string" Label="Search" @bind-Value="@_searchText" @onblur="() => FilterEntries()"></MudTextField>
-        @* <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@SearchClicked">Search</MudButton> *@
+        <MudTextField T="string" Label="Search" @bind-Value="@_searchText" Immediate="true" TextChanged="FilterEntries" @onblur="FilterEntries"></MudTextField>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@GetUserTest">Get User Test</MudButton>
+
+        <MudText>Test string: @_testString</MudText>
 
         <MudList>
-            @foreach (var entry in _entries)
+            @foreach (var entry in _filteredEntries)
             {
                 <MudListItem>
-                    <MudStack>
+                    <MudCard>
+                        @*<MudStack>*@
                         <MudButton OnClick="@((e) => OpenDialog(entry))" Color="Color.Primary">@entry.Name</MudButton>
-                        <MudText Align="Align.Center">@entry.Url</MudText>
-                    </MudStack>
+                        <MudText>@entry.Url</MudText> @* Align="Align.Center"*@
+                        @*</MudStack>*@
+                    </MudCard>
                 </MudListItem>
             }
         </MudList>
 
         <MudText>More text here!</MudText>
 
-        <MudPaper>
-            <MudText Typo="Typo.h6">This is a simple example of a MudBlazor app.</MudText>
-        </MudPaper>
-
+        <MudCard>
+            <MudText Typo="Typo.h6">This is an example of a MudCard.</MudText>
+        </MudCard>
+        
         <MudElement>
             Some more stuff.
         </MudElement>
@@ -38,14 +42,38 @@
 </AuthorizeView>
 
 @code {
+    #pragma warning disable CS8618
     private string _searchText = string.Empty;
-    private static List<PasswordEntry> _entries = GetHardcodedEntries("original");
-    private List<PasswordEntry> _filteredEntries = new List<PasswordEntry>(_entries); //GetHardcodedEntries("orignial");
+    [Inject]
+    public AuthenticationStateProvider authenticationStateProvider { get; set; }
+    private List<PasswordEntry> _entries;
+    private List<PasswordEntry> _filteredEntries;
+    private string _userEmail;
+    private string? _testString = null;
+#pragma warning restore CS8618
 
-    // DialogOptions noHeader = new DialogOptions() { NoHeader = true };
-    // DialogOptions disableBackdropClick = new DialogOptions() { DisableBackdropClick = true };
-    // DialogOptions fullScreen = new DialogOptions() { FullScreen = true, CloseButton = true };
-    // DialogOptions topCenter = new DialogOptions() { Position = DialogPosition.TopCenter };
+    protected override Task OnInitializedAsync()
+    {
+        _entries = GetHardcodedEntries("original"); // await PasswordService.GetEntriesFromDatabase(email);
+        _filteredEntries = new(_entries);
+
+        return Task.CompletedTask;
+    }
+
+    private async Task GetUserTest()
+    {
+        try
+        {
+            var authenticationState = await ((CustomAuthenticationStateProvider)authenticationStateProvider).GetAuthenticationStateAsync();
+            var userClaims = authenticationState.User.Claims;
+            _userEmail = userClaims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email)?.Value ?? "";
+            _testString = string.IsNullOrEmpty(_userEmail) ? "No email found." : _userEmail;
+        }
+        catch (Exception ex)
+        {
+            _testString = ex.Message;
+        }
+    }
 
     private async Task OpenDialog(PasswordEntry entry)
     {
@@ -58,10 +86,13 @@
 
         if (!result.Canceled)
         {
+            // var userClaims = ((CustomAuthenticationStateProvider)authenticationStateProvider).GetAuthenticationStateAsync().Result.User.Claims;
+            // _userEmail = userClaims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email)?.Value ?? ""; // We can revisit this later, but I think it works, it will be null if the claim is not found
             // await fetch new data from the database here and update the list of entries
-            // _entries = await PasswordService.GetEntriesFromDatabase(userid);
-
-            _entries = GetHardcodedEntries("updated"); // await PasswordService.GetEntriesFromDatabase(userid);
+            // _entries = await PasswordService.GetEntriesFromDatabase(_userEmail);
+            _entries = GetHardcodedEntries("updated"); // await PasswordService.GetEntriesFromDatabase(_userEmail);
+            _searchText = string.Empty;
+            FilterEntries();
             StateHasChanged(); // the database should be updated here from the dialog so we have one point of truth
         } 
         // Else the dialog was canceled

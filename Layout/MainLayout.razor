@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@using PwdMngrWasm.Pages
 
 <MudThemeProvider />
 <MudDialogProvider />
@@ -9,7 +10,7 @@
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudText Typo="Typo.h5" Class="ml-3">PW9</MudText>
         <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" OnClick="() => OpenTopCornerDialog()" />
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
         <NavMenu />
@@ -22,8 +23,26 @@
 @code {
     // trying to set these properties as public static for the navmenu to access
     public static bool _drawerOpen = true;
+
     public static void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
+    }
+
+    private async Task OpenTopCornerDialog()
+    {
+        var options = new DialogOptions() { CloseButton = true, CloseOnEscapeKey = true, Position = DialogPosition.TopRight };
+        // var parameters = new DialogParameters<PasswordEntry> { { "Entry", (object)entry } };
+
+        // var dialog = await Dialog.ShowAsync<TopRightDialog>("Thoth", options); parameters,
+        // var result = await dialog.Result;
+
+        // if (!result.Canceled)
+        {
+            // _entries = GetHardcodedEntries("updated");
+            // _searchText = string.Empty;
+            // FilterEntries();
+            // StateHasChanged();
+        }
     }
 }
