@@ -20,6 +20,10 @@
     </MudMainContent>
 </MudLayout>
 
+<MudScrollToTop>
+    <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.ArrowCircleUp" />
+</MudScrollToTop>
+
 @code {
     // trying to set these properties as public static for the navmenu to access
     public static bool _drawerOpen = true;
@@ -34,10 +38,10 @@
         var options = new DialogOptions() { CloseButton = true, CloseOnEscapeKey = true, Position = DialogPosition.TopRight };
         // var parameters = new DialogParameters<PasswordEntry> { { "Entry", (object)entry } };
 
-        // var dialog = await Dialog.ShowAsync<TopRightDialog>("Thoth", options); parameters,
-        // var result = await dialog.Result;
+        var dialog = await Dialog.ShowAsync<TopRightDialog>("Thoth", options); // parameters,
+        var result = await dialog.Result;
 
-        // if (!result.Canceled)
+        if (!result.Canceled)
         {
             // _entries = GetHardcodedEntries("updated");
             // _searchText = string.Empty;

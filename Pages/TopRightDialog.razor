@@ -1,0 +1,18 @@
+﻿<MudDialog>
+    <DialogContent>
+        <MudText Typo="Typo.body1">Hello.</MudText>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton OnClick="CancelTRC">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="SubmitTRC">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    public MudDialogInstance MudDialog { get; set; }
+
+    private void SubmitTRC() => MudDialog.Close(DialogResult.Ok(true));
+    private void CancelTRC() => MudDialog.Cancel();
+}
