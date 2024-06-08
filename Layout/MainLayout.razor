@@ -1,23 +1,27 @@
 ﻿@inherits LayoutComponentBase
 @using PwdMngrWasm.Pages
 
-<MudThemeProvider />
+<MudThemeProvider @bind-IsDarkMode="@_isDarkMode"/>
 <MudDialogProvider />
 <MudSnackbarProvider />
 
 <MudLayout>
-    <MudAppBar Elevation="1">
+    @* I assigned this color here as a class, can come back to *@
+    <MudAppBar Elevation="1" Class="mud-secondary">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudText Typo="Typo.h5" Class="ml-3">PW9</MudText>
         <MudSpacer />
         <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" OnClick="() => OpenTopCornerDialog()" />
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
-        <NavMenu />
+        <NavMenu ToggleMethodReference="DarkModeToggle"/>
     </MudDrawer>
     <MudMainContent Style="display:flex;flex-direction:column;flex-start;margin:20px;">
         @Body
     </MudMainContent>
+    @*
+        <MudFooter>Footer</MudFooter>
+    *@
 </MudLayout>
 
 <MudScrollToTop>
@@ -27,6 +31,15 @@
 @code {
     // trying to set these properties as public static for the navmenu to access
     public static bool _drawerOpen = true;
+
+    // we can make the dark mode toggleable for the user
+    public static bool _isDarkMode = true;
+
+    public void DarkModeToggle()
+    {
+        _isDarkMode = !_isDarkMode;
+        StateHasChanged();
+    }
 
     public static void DrawerToggle()
     {

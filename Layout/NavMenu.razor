@@ -47,6 +47,8 @@
                     <a style="cursor:pointer;" @onclick="() => LogoutClicked()">Logout</a>
                 </NavLink>
             </div>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" Size="Size.Small" OnClick="@ToggleDarkMode">Toggle Dark Mode</MudButton>
+
         </Authorized>
     </AuthorizeView>
 </nav>
@@ -59,7 +61,15 @@
     public NavigationManager navigationManager { get; set; }
     [Inject]
     public AuthenticationService authenticationService { get; set; }
+    [Parameter]
+    public EventCallback ToggleMethodReference { get; set; }
     #pragma warning restore CS8618
+
+    private async Task ToggleDarkMode()
+    {
+        if (ToggleMethodReference.HasDelegate)
+            await ToggleMethodReference.InvokeAsync(null);
+    }
 
     private async Task LogoutClicked()
     {
@@ -70,7 +80,7 @@
         // there should also be a call to the server to invalidate the refresh token
         // await authenticationService.LogoutAsync();
 
-        MainLayout.DrawerToggle();
+        MainLayout.DrawerToggle(); // if the drawer is open, close it on small screens, not desktop
         navigationManager.NavigateTo("/", forceLoad: false);
     }
 }
