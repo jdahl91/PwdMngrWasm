@@ -1,6 +1,6 @@
 ﻿<MudDialog>
     <DialogContent>
-        <MudText Typo="Typo.body1">Hello.</MudText>
+        <MudText Typo="Typo.body1">@_dialogContent</MudText>
     </DialogContent>
 
     <DialogActions>
@@ -8,13 +8,3 @@
         <MudButton Color="Color.Primary" OnClick="SubmitTRC">Ok</MudButton>
     </DialogActions>
 </MudDialog>
-
-@code {
-    [CascadingParameter]
-    #pragma warning disable CS8618
-    public MudDialogInstance MudDialog { get; set; }
-    #pragma warning restore CS8618
-
-    private void SubmitTRC() => MudDialog.Close(DialogResult.Ok(true));
-    private void CancelTRC() => MudDialog.Cancel();
-}

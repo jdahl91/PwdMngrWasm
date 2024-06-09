@@ -1,11 +1,10 @@
 ﻿@inherits LayoutComponentBase
-@using PwdMngrWasm.Pages
 
 <MudThemeProvider @bind-IsDarkMode="@_isDarkMode"/>
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<MudLayout>
+<MudLayout Style="min-height:100vh;">
     @* I assigned this color here as a class, can come back to *@
     <MudAppBar Elevation="1" Class="mud-secondary">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
@@ -19,47 +18,12 @@
     <MudMainContent Style="display:flex;flex-direction:column;flex-start;margin:20px;">
         @Body
     </MudMainContent>
-    @*
-        <MudFooter>Footer</MudFooter>
-    *@
 </MudLayout>
-
+<MudAppBar Bottom="true" Style="position:static;">
+    <div style="display:flex;justify-content:center;width: -webkit-fill-available;">
+        <p>&copy; 2024 - Joakim Dahl</p>
+    </div>
+</MudAppBar>
 <MudScrollToTop>
-    <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.ArrowCircleUp" />
+    <MudFab Color="Color.Secondary" Size="Size.Small" StartIcon="@Icons.Material.Filled.ArrowCircleUp" />
 </MudScrollToTop>
-
-@code {
-    // trying to set these properties as public static for the navmenu to access
-    public static bool _drawerOpen = true;
-
-    // we can make the dark mode toggleable for the user
-    public static bool _isDarkMode = true;
-
-    public void DarkModeToggle()
-    {
-        _isDarkMode = !_isDarkMode;
-        StateHasChanged();
-    }
-
-    public static void DrawerToggle()
-    {
-        _drawerOpen = !_drawerOpen;
-    }
-
-    private async Task OpenTopCornerDialog()
-    {
-        var options = new DialogOptions() { CloseButton = true, CloseOnEscapeKey = true, Position = DialogPosition.TopRight };
-        // var parameters = new DialogParameters<PasswordEntry> { { "Entry", (object)entry } };
-
-        var dialog = await Dialog.ShowAsync<TopRightDialog>("Thoth", options); // parameters,
-        var result = await dialog.Result;
-
-        if (!result.Canceled)
-        {
-            // _entries = GetHardcodedEntries("updated");
-            // _searchText = string.Empty;
-            // FilterEntries();
-            // StateHasChanged();
-        }
-    }
-}
