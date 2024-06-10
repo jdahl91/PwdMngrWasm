@@ -101,3 +101,9 @@ a, .btn-link {
 code {
     color: #c02d76;
 }
+
+@media (min-width: 1024px) {
+    .flip-horizontal {
+        transform: scaleX(-1);
+    }
+}

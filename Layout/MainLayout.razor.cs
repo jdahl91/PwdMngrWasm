@@ -1,4 +1,5 @@
-﻿using MudBlazor;
+﻿using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using PwdMngrWasm.Pages;
 using System.Net.NetworkInformation;
 
@@ -7,7 +8,7 @@ namespace PwdMngrWasm.Layout
     public partial class MainLayout
     {
         // trying to set these properties as public static for the navmenu to access
-        public static bool _drawerOpen = true;
+        public static bool _drawerOpen = false;
 
         // we can make the dark mode toggleable for the user
         public static bool _isDarkMode = true;
