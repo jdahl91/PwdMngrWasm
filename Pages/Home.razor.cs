@@ -22,13 +22,6 @@ namespace PwdMngrWasm.Pages
         private string _userEmail;
 #pragma warning restore CS8618
 
-        //protected override async Task OnAfterRenderAsync(bool firstRender)
-        //{ 
-        //    await JSRuntime.InvokeVoidAsync("applyResponsiveClass");
-        //    //_isLargeScreen = await JSRuntime.InvokeAsync<bool>("isLargeScreen");
-        //    //StateHasChanged();
-        //}
-
         protected override async Task OnInitializedAsync()
         {
             _entries = GetHardcodedEntries("original"); // await PasswordService.GetEntriesFromDatabase(email);
