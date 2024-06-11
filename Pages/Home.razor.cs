@@ -5,42 +5,34 @@ using PwdMngrWasm.DTOs;
 using PwdMngrWasm.State;
 using System.Net.NetworkInformation;
 using System.Security.Claims;
+using Microsoft.JSInterop;
 
 namespace PwdMngrWasm.Pages
 {
     public partial class Home
     {            
 #pragma warning disable CS8618
-    private string _searchText = string.Empty;
+        private string _searchText = string.Empty;
         [Inject]
         public AuthenticationStateProvider authenticationStateProvider { get; set; }
+        [Inject]
+        public IJSRuntime JSRuntime { get; set; }
         private List<PasswordEntry> _entries;
         private List<PasswordEntry> _filteredEntries;
         private string _userEmail;
-        private string? _testString = null;
 #pragma warning restore CS8618
 
-        protected override Task OnInitializedAsync()
+        //protected override async Task OnAfterRenderAsync(bool firstRender)
+        //{ 
+        //    await JSRuntime.InvokeVoidAsync("applyResponsiveClass");
+        //    //_isLargeScreen = await JSRuntime.InvokeAsync<bool>("isLargeScreen");
+        //    //StateHasChanged();
+        //}
+
+        protected override async Task OnInitializedAsync()
         {
             _entries = GetHardcodedEntries("original"); // await PasswordService.GetEntriesFromDatabase(email);
             _filteredEntries = new(_entries);
-
-            return Task.CompletedTask;
-        }
-
-        private async Task GetUserTest()
-        {
-            try
-            {
-                var authenticationState = await ((CustomAuthenticationStateProvider)authenticationStateProvider).GetAuthenticationStateAsync();
-                var userClaims = authenticationState.User.Claims;
-                _userEmail = userClaims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email)?.Value ?? "";
-                _testString = string.IsNullOrEmpty(_userEmail) ? "No email found." : _userEmail;
-            }
-            catch (Exception ex)
-            {
-                _testString = ex.Message;
-            }
         }
 
         private async Task OpenDialog(PasswordEntry entry)
@@ -114,5 +106,20 @@ namespace PwdMngrWasm.Pages
                 ).ToList();
             }
         }
+
+        //private async Task GetUserTest()
+        //{
+        //    try
+        //    {
+        //        var authenticationState = await ((CustomAuthenticationStateProvider)authenticationStateProvider).GetAuthenticationStateAsync();
+        //        var userClaims = authenticationState.User.Claims;
+        //        _userEmail = userClaims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email)?.Value ?? "";
+        //        _testString = string.IsNullOrEmpty(_userEmail) ? "No email found." : _userEmail;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _testString = ex.Message;
+        //    }
+        //}
     }
 }

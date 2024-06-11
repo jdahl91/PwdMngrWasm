@@ -2,20 +2,49 @@
 
 <PageTitle>Home</PageTitle>
 
+<style>
+    .image-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%; /* remove if using small-screen below */
+    }
+
+    .responsive-image {
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+    }
+
+    .large-screen {
+        height: 75vh;
+    }
+
+    /* .small-screen {
+        height: 100%;
+    } */
+</style>
+
 <AuthorizeView>
     <NotAuthorized>
         <MudText><h1>Welcome to PW9</h1></MudText>
         <MudText Typo="Typo.body1">Store your passwords securely and access them from anywhere.</MudText>
         <MudText Typo="Typo.body1">Sign up to get started or please login to access your stored passwords.</MudText>
-        <div style="display:flex;justify-content:center;margin-top:30px;" class="flip-horizontal">
-            <MudImage Src="key.png" Alt="key" Elevation="1" Style="width:65%;height:auto;border:none;box-shadow:none;"></MudImage>
-        </div>
+        <MudContainer>
+            <div class="image-container" id="image-container-id">
+                <picture>
+                    <!-- Use the vertical image for screens larger than 1024px -->
+                    <source srcset="key_vertical.png" media="(min-width: 1024px)">
+                    <!-- Fallback to the original image for smaller screens -->
+                    <img src="key.png" alt="Key image" class="responsive-image">
+                </picture>
+            </div>
+        </MudContainer>
     </NotAuthorized>
     <Authorized>
         <MudTextField T="string" Label="Search" @bind-Value="@_searchText" Immediate="true" TextChanged="FilterEntries" @onblur="FilterEntries"></MudTextField>
-        @* <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto" OnClick="@GetUserTest">Get User Test</MudButton> *@
-
-        <MudText>Test string: @_testString</MudText>
 
         <MudList>
             @foreach (var entry in _filteredEntries)
@@ -23,7 +52,7 @@
                 <MudListItem>
                     <MudCard>
                         <MudButton OnClick="@((e) => OpenDialog(entry))" Color="Color.Primary">@entry.Name</MudButton>
-                        <MudText>@entry.Url</MudText> @* Align="Align.Center"*@
+                        <MudText>@entry.Url</MudText>
                     </MudCard>
                 </MudListItem>
             }
@@ -40,3 +69,34 @@
         </MudElement>
     </Authorized>
 </AuthorizeView>
+
+<script>
+    window.addEventListener('resize', applyResponsiveClass);
+    waitForElementAndApplyResponsiveClass("image-container-id", 100);
+    // document.addEventListener('DOMContentLoaded', function () {
+    //     applyResponsiveClass();
+    // });
+
+    function waitForElementAndApplyResponsiveClass(elementId, intervalMs) {
+        if (window.innerWidth < 1024) return;
+        var interval = setInterval(function () {
+            var element = document.getElementById(elementId);
+            if (element) {
+                clearInterval(interval);
+                applyResponsiveClass(element);
+            }
+        }, intervalMs);
+    }
+
+    function applyResponsiveClass() {
+        var element = document.getElementById('image-container-id');
+
+        if (window.innerWidth > 1024) {
+            if (!element.classList.contains('large-screen')) element.classList.add('large-screen');
+            // if (element.classList.contains('small-screen')) element.classList.remove('small-screen');
+        } else {
+            if (element.classList.contains('large-screen')) element.classList.remove('large-screen');
+            // if (!element.classList.contains('small-screen')) element.classList.add('small-screen');
+        }
+    }
+</script>
