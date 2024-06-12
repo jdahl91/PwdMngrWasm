@@ -9,7 +9,6 @@
         align-items: center;
         width: 100%;
         height: 100%;
-        margin-block: 80px;
     }
 
     .responsive-image {
@@ -30,10 +29,10 @@
         <MudText Typo="Typo.body1">Store your passwords securely and access them from anywhere.</MudText>
         <MudText Typo="Typo.body1">Sign up to get started or please login to access your stored passwords.</MudText>
         <MudContainer>
-            <div class="image-container"> @* id="image-container-id" *@
+            <div class="image-container">
                 <picture>
                     <!-- Use the vertical image for screens larger than 1024px -->
-                    <source srcset="key_vertical.png" media="(min-width: 1024px)">
+                    <source srcset="key_vertical_margin.png" media="(min-width: 1024px)">
                     <!-- Fallback to the original image for smaller screens -->
                     <img src="key.png" alt="Key image" class="responsive-image">
                 </picture>
@@ -46,58 +45,30 @@
         <MudList>
             @foreach (var entry in _filteredEntries)
             {
-                <MudListItem>
-                    <MudCard>
-                        <MudButton OnClick="@((e) => OpenDialog(entry))" Color="Color.Primary">@entry.Name</MudButton>
-                        <MudText>@entry.Url</MudText>
+                <MudListItem Style="margin-block:10px;">
+                    <MudCard Style="padding:7px;">
+                        <MudGrid>
+                            <MudItem xs="8">
+                                <MudGrid>
+                                    <MudItem xs="12">
+                                        <MudText>Name</MudText>
+                                        <MudButton OnClick="@((e) => OpenDialog(entry))" Color="Color.Secondary">@entry.Name</MudButton>
+                                    </MudItem>
+                                    <MudItem xs="12">
+                                        <MudText>Url</MudText>
+                                        <MudText>@entry.Url</MudText>
+                                    </MudItem>
+                                </MudGrid>
+                            </MudItem>
+                            <MudItem xs="4">
+                                <MudText>Password Entry</MudText>
+                                <MudIconButton Icon="@Icons.Material.Filled.Key" Color="Color.Secondary" />
+                            </MudItem>
+                        </MudGrid>
                     </MudCard>
                 </MudListItem>
             }
         </MudList>
 
-        <MudText>More text here!</MudText>
-
-        <MudCard>
-            <MudText Typo="Typo.h6">This is an example of a MudCard.</MudText>
-        </MudCard>
-        
-        <MudElement>
-            Some more stuff.
-        </MudElement>
     </Authorized>
 </AuthorizeView>
-
-@* 
-<script>
-    window.addEventListener('resize', applyResponsiveClass);
-    waitForElementAndApplyResponsiveClass("image-container-id", 100);
-
-    // delete maybe tuesday or wednesday
-    // document.addEventListener('DOMContentLoaded', function () {
-    //     applyResponsiveClass();
-    // });
-
-    function waitForElementAndApplyResponsiveClass(elementId, intervalMs) {
-        if (window.innerWidth < 1024) return;
-        var interval = setInterval(function () {
-            var element = document.getElementById(elementId);
-            if (element) {
-                clearInterval(interval);
-                applyResponsiveClass(element);
-            }
-        }, intervalMs);
-    }
-
-    function applyResponsiveClass() {
-        var element = document.getElementById('image-container-id');
-
-        if (window.innerWidth > 1024) {
-            if (!element.classList.contains('large-screen')) element.classList.add('large-screen');
-            // if (element.classList.contains('small-screen')) element.classList.remove('small-screen');
-        } else {
-            if (element.classList.contains('large-screen')) element.classList.remove('large-screen');
-            // if (!element.classList.contains('small-screen')) element.classList.add('small-screen');
-        }
-    }
-</script>
- *@

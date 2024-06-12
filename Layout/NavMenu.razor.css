@@ -9,7 +9,7 @@
 }
 
 .nav-link {
-    color: black;
+    color: white;
 }
 
 .bi-house-door-fill-nav-menu {
@@ -29,29 +29,29 @@
     padding-bottom: 0.5rem;
 }
 
-    .nav-item:first-of-type {
-        padding-top: 1rem;
-    }
+.nav-item:first-of-type {
+    padding-top: 1rem;
+}
 
-    .nav-item:last-of-type {
-        padding-bottom: 1rem;
-    }
+.nav-item:last-of-type {
+    padding-bottom: 1rem;
+}
 
-    .nav-item ::deep a {
-        color: black;
-        border-radius: 4px;
-        height: 3rem;
-        display: flex;
-        align-items: center;
-        line-height: 3rem;
-    }
+.nav-item ::deep a {
+    color: white;
+    border-radius: 4px;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    line-height: 3rem;
+}
 
 .nav-item ::deep a.active {
-    background-color: lightgreen;
-    color: green;
+    background-color: pink;
+    color: white;
 }
 
 .nav-item ::deep a:hover {
-    background-color: lightblue;
-    color: blue;
+    background-color: hotpink;
+    color: white;
 }
