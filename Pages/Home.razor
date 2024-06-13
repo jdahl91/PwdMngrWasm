@@ -17,10 +17,6 @@
         width: auto;
         height: auto;
     }
-
-    .large-screen {
-        height: 75vh;
-    }
 </style>
 
 <AuthorizeView>
@@ -40,7 +36,7 @@
         </MudContainer>
     </NotAuthorized>
     <Authorized>
-        <MudTextField T="string" Label="Search" @bind-Value="@_searchText" Immediate="true" TextChanged="FilterEntries" @onblur="FilterEntries"></MudTextField>
+        <MudTextField T="string" Label="Search" @bind-Value="@_searchText" Immediate="true" TextChanged="FilterEntries" @onblur="FilterEntries" Clearable="true"></MudTextField>
 
         <MudList>
             @foreach (var entry in _filteredEntries)
