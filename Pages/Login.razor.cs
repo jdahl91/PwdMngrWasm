@@ -19,6 +19,7 @@ namespace PwdMngrWasm.Pages
         public IJSRuntime JS { get; set; }
 #pragma warning restore CS8618
         public LoginDTO LoginForm = new();
+        private bool _loginFailed = false;
 
         private async Task LoginClicked()
         {
@@ -26,6 +27,7 @@ namespace PwdMngrWasm.Pages
 
             if (!response)
             {
+                _loginFailed = true;
                 await JS.InvokeVoidAsync("alert", "Login unsuccessful.");
                 LoginForm = new();
                 return;

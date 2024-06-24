@@ -11,7 +11,7 @@ namespace PwdMngrWasm.State
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider
     {
         private readonly IJSRuntime _jsRuntime;
-        private string? _jwtToken = null;
+        //private string? _jwtToken = null;
         private string? _refreshToken = null;
 
         public CustomAuthenticationStateProvider(IJSRuntime jsRuntime)
@@ -23,14 +23,14 @@ namespace PwdMngrWasm.State
         {
             // for now this breaks the app if there is a mismatch between the token in the local storage and the token in the provider
             // lets reviw this later
-            _jwtToken = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
+            var jwtToken = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
 
-            if (string.IsNullOrEmpty(_jwtToken))
+            if (string.IsNullOrEmpty(jwtToken))
             {
                 return new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
             }
 
-            var identity = CreateClaimsIdentityFromJwt(_jwtToken);
+            var identity = CreateClaimsIdentityFromJwt(jwtToken);
             var user = new ClaimsPrincipal(identity);
 
             return new AuthenticationState(user);
@@ -38,10 +38,10 @@ namespace PwdMngrWasm.State
 
         public async Task MarkUserAsAuthenticated(string jwt, string refreshToken)
         {
-            _jwtToken = jwt;
-            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "authToken", _jwtToken);
+            //var _jwtToken = jwt;
+            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "authToken", jwt);
             await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "refreshToken", refreshToken);
-            var identity = CreateClaimsIdentityFromJwt(_jwtToken);
+            var identity = CreateClaimsIdentityFromJwt(jwt);
             var user = new ClaimsPrincipal(identity);
 
             NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(user)));
@@ -49,7 +49,7 @@ namespace PwdMngrWasm.State
 
         public async Task MarkUserAsLoggedOut()
         {
-            _jwtToken = null;
+            //_jwtToken = null;
             await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", "authToken");
             await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", "refreshToken");
             var identity = new ClaimsIdentity();
