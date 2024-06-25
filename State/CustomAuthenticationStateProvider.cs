@@ -19,6 +19,11 @@ namespace PwdMngrWasm.State
             _jsRuntime = jsRuntime;
         }
 
+        public async Task<string?> GetJwt()
+        {
+            return await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
+        }
+
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             // for now this breaks the app if there is a mismatch between the token in the local storage and the token in the provider

@@ -23,19 +23,15 @@ namespace PwdMngrWasm.Pages
 
         private async Task LoginClicked()
         {
-            var response = await AuthenticationService.LoginAsync(LoginForm);
+            var success = await AuthenticationService.LoginAsync(LoginForm);
 
-            if (!response)
+            if (!success)
             {
                 _loginFailed = true;
-                await JS.InvokeVoidAsync("alert", "Login unsuccessful.");
                 LoginForm = new();
                 return;
             }
-            else
-            {
-                NavigationManager.NavigateTo("/", forceLoad: false);
-            }
+            NavigationManager.NavigateTo("/", forceLoad: false);
         }
     }
 }

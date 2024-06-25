@@ -6,6 +6,7 @@ using PwdMngrWasm.State;
 using System.Net.NetworkInformation;
 using System.Security.Claims;
 using Microsoft.JSInterop;
+using PwdMngrWasm.Services;
 
 namespace PwdMngrWasm.Pages
 {
@@ -17,15 +18,27 @@ namespace PwdMngrWasm.Pages
         public AuthenticationStateProvider authenticationStateProvider { get; set; }
         [Inject]
         public IJSRuntime JSRuntime { get; set; }
+        [Inject]
+        public PasswordService PasswordService { get; set; }
         private List<PasswordEntry> _entries;
-        private List<PasswordEntry> _filteredEntries;
-        private string _userEmail;
+        //private List<PasswordEntry>? _filteredEntries = null;
+        private string? _userEmail = null;
 #pragma warning restore CS8618
 
         protected override async Task OnInitializedAsync()
         {
-            _entries = GetHardcodedEntries("original"); // await PasswordService.GetEntriesFromDatabase(email);
-            _filteredEntries = new(_entries);
+            var userEmail = await GetUser();
+
+            //_entries = await PasswordService.GetPasswordEntriesAsync(userEmail); // GetHardcodedEntries("original"); // await PasswordService.GetEntriesFromDatabase(email);
+            //_filteredEntries = new(_entries);
+        }
+
+        private async Task TryLoad()
+        {
+            //var userEmail = await GetUser();
+
+            _entries = await PasswordService.GetPasswordEntriesAsync(_userEmail!); // GetHardcodedEntries("original"); // await PasswordService.GetEntriesFromDatabase(email);
+            //_filteredEntries = new(_entries);
         }
 
         private async Task OpenDialog(PasswordEntry entry)
@@ -79,40 +92,41 @@ namespace PwdMngrWasm.Pages
 
         private void FilterEntries()
         {
-            var searchText = _searchText.ToLower().Trim();
-            if (string.IsNullOrWhiteSpace(searchText))
-            {
-                _filteredEntries = _entries;
-            }
-            else
-            {
-                _filteredEntries = _entries.Where(entry =>
-                    //entry.EntryId.ToString().Contains(searchText) ||
-                    //entry.UserId.ToString().Contains(searchText) ||
-                    entry.Url!.ToLower().Contains(searchText) ||
-                    entry.Name!.ToLower().Contains(searchText) // ||
-                    //entry.Note!.ToLower().Contains(searchText) ||
-                    //entry.Username!.ToLower().Contains(searchText) ||
-                    //entry.Password!.ToLower().Contains(searchText) ||
-                    //entry.CreatedAt.ToString().Contains(searchText) ||
-                    //entry.UpdatedAt.ToString().Contains(searchText)
-                ).ToList();
-            }
+            //var searchText = _searchText.ToLower().Trim();
+            //if (string.IsNullOrWhiteSpace(searchText))
+            //{
+            //    _filteredEntries = _entries;
+            //}
+            //else
+            //{
+            //    _filteredEntries = _entries.Where(entry =>
+            //        entry.EntryId.ToString().Contains(searchText) ||
+            //        entry.UserId.ToString().Contains(searchText) ||
+            //        entry.Url!.ToLower().Contains(searchText) ||
+            //        entry.Name!.ToLower().Contains(searchText) ||
+            //        entry.Note!.ToLower().Contains(searchText) ||
+            //        entry.Username!.ToLower().Contains(searchText) ||
+            //        entry.Password!.ToLower().Contains(searchText) ||
+            //        entry.CreatedAt.ToString().Contains(searchText) ||
+            //        entry.UpdatedAt.ToString().Contains(searchText)
+            //    ).ToList();
+            //}
         }
 
-        //private async Task GetUserTest()
-        //{
-        //    try
-        //    {
-        //        var authenticationState = await ((CustomAuthenticationStateProvider)authenticationStateProvider).GetAuthenticationStateAsync();
-        //        var userClaims = authenticationState.User.Claims;
-        //        _userEmail = userClaims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email)?.Value ?? "";
-        //        _testString = string.IsNullOrEmpty(_userEmail) ? "No email found." : _userEmail;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _testString = ex.Message;
-        //    }
-        //}
+        private async Task<string> GetUser()
+        {
+            try
+            {
+                var authenticationState = await ((CustomAuthenticationStateProvider)authenticationStateProvider).GetAuthenticationStateAsync();
+                var userClaims = authenticationState.User.Claims;
+                var userEmail = userClaims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email)?.Value ?? "";
+                _userEmail = userEmail;
+                return userEmail;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
     }
 }

@@ -38,33 +38,43 @@
     <Authorized>
         <MudTextField T="string" Label="Search" @bind-Value="@_searchText" Immediate="true" TextChanged="FilterEntries" @onblur="FilterEntries" Clearable="true"></MudTextField>
 
-        <MudList>
-            @foreach (var entry in _filteredEntries)
-            {
-                <MudListItem Style="margin-block:10px;">
-                    <MudCard Style="padding:7px;">
-                        <MudGrid>
-                            <MudItem xs="8">
-                                <MudGrid>
-                                    <MudItem xs="12">
-                                        <MudText>Name</MudText>
-                                        <MudButton OnClick="@((e) => OpenDialog(entry))" Color="Color.Secondary">@entry.Name</MudButton>
-                                    </MudItem>
-                                    <MudItem xs="12">
-                                        <MudText>Url</MudText>
-                                        <MudText>@entry.Url</MudText>
-                                    </MudItem>
-                                </MudGrid>
-                            </MudItem>
-                            <MudItem xs="4">
-                                <MudText>Password Entry</MudText>
-                                <MudIconButton Icon="@Icons.Material.Filled.Key" Color="Color.Secondary" />
-                            </MudItem>
-                        </MudGrid>
-                    </MudCard>
-                </MudListItem>
-            }
-        </MudList>
+        <MudButton OnClick="TryLoad">Load Pwds Test</MudButton>
+
+        @if (_userEmail is not null)
+        {
+            <p>@_userEmail</p>
+
+        }
+        @if (_entries is not null)
+        {
+            <MudList>
+                @foreach (var entry in _entries)
+                {
+                    <MudListItem Style="margin-block:10px;">
+                        <MudCard Style="padding:7px;">
+                            <MudGrid>
+                                <MudItem xs="8">
+                                    <MudGrid>
+                                        <MudItem xs="12">
+                                            <MudText>Name</MudText>
+                                            <MudButton OnClick="@((e) => OpenDialog(entry))" Color="Color.Secondary">@entry.Name</MudButton>
+                                        </MudItem>
+                                        <MudItem xs="12">
+                                            <MudText>Url</MudText>
+                                            <MudText>@entry.Url</MudText>
+                                        </MudItem>
+                                    </MudGrid>
+                                </MudItem>
+                                <MudItem xs="4">
+                                    <MudText>Password Entry</MudText>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Key" Color="Color.Secondary" />
+                                </MudItem>
+                            </MudGrid>
+                        </MudCard>
+                    </MudListItem>
+                }
+            </MudList>
+        }
 
     </Authorized>
 </AuthorizeView>

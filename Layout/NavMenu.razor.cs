@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using PwdMngrWasm.Services;
 using PwdMngrWasm.State;
 
@@ -9,11 +10,11 @@ namespace PwdMngrWasm.Layout
     {
 #pragma warning disable CS8618
         [Inject]
-        public AuthenticationStateProvider authenticationStateProvider { get; set; }
+        public NavigationManager NavigationManager { get; set; }
         [Inject]
-        public NavigationManager navigationManager { get; set; }
+        public AuthenticationService AuthenticationService { get; set; }
         [Inject]
-        public AuthenticationService authenticationService { get; set; }
+        public IJSRuntime JS { get; set; }
         [Parameter]
         public EventCallback ToggleMethodReference { get; set; }
 #pragma warning restore CS8618
@@ -26,15 +27,23 @@ namespace PwdMngrWasm.Layout
 
         private async Task LogoutClicked()
         {
-            var customAuthenticationStateProvider = (CustomAuthenticationStateProvider)authenticationStateProvider;
-            await customAuthenticationStateProvider.MarkUserAsLoggedOut();
+            var success = await AuthenticationService.LogoutAsync();
+            var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
 
-            // TODO:
-            // there should also be a call to the server to invalidate the refresh token
-            // await authenticationService.LogoutAsync();
-
-            MainLayout.DrawerToggle(); // if the drawer is open, close it on small screens, not desktop
-            navigationManager.NavigateTo("/", forceLoad: false);
+            if (success && uri.PathAndQuery == "/")
+            {
+                StateHasChanged();
+            }
+            else if (!success)
+            {
+                await JS.InvokeVoidAsync("alert", "Logout unsuccessful.");
+            }
+            else
+            {
+                NavigationManager.NavigateTo("/", forceLoad: false);
+            }
+            //MainLayout.DrawerToggle(); 
+            //NavigationManager.NavigateTo("/", forceLoad: false);
         }
     }
 }

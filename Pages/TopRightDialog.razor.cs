@@ -9,7 +9,7 @@ namespace PwdMngrWasm.Pages
 #pragma warning disable CS8618
         public MudDialogInstance MudDialog { get; set; }
 #pragma warning restore CS8618
-        private string _dialogContent = "This browser client was developed in Blazor WebAssembly. The back-end serving this application is an ASP.NET Core API, the datastore used is PostgreSQL.";
+        private string _dialogContent = "This browser client was developed in Blazor WebAssembly. The back-end web server runs an ASP.NET Core API behind Nginx as a reverse proxy, the datastore used is PostgreSQL.";
 
         private void SubmitTRC() => MudDialog.Close(DialogResult.Ok(true));
         private void CancelTRC() => MudDialog.Cancel();

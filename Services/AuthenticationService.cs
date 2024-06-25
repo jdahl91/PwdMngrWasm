@@ -28,16 +28,12 @@ namespace PwdMngrWasm.Services
 
         public async Task<bool> LoginAsync(LoginDTO form)
         {
-            //var customAuthenticationStateProvider = _authenticationStateProvider;
-            //await customAuthenticationStateProvider.MarkUserAsAuthenticated("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJOYW1lIjoiSm9ha2ltIiwiRW1haWwiOiJqb2FraW1kYWhsQGdteC51cyIsIlJvbGUiOiJBZG1pbiJ9.xwehf7zL11t0lHZhSynNmeQsYZghMdDFoAWNPrYcfhM", "new-v9-refresh-token-test");
-            //return true;
-
-            var response = await _httpClient.PostAsJsonAsync("https://834627.xyz/api/account/login", form);
+            var httpResponse = await _httpClient.PostAsJsonAsync("https://834627.xyz/api/account/login", form);
             
-            if (!response.IsSuccessStatusCode)
+            if (!httpResponse.IsSuccessStatusCode)
                 return false;
             
-            var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
+            var loginResponse = await httpResponse.Content.ReadFromJsonAsync<LoginResponse>();
 
             var jwtToken = loginResponse?.JwtToken;
             var refreshToken = loginResponse?.RefreshToken;

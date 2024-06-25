@@ -9,26 +9,26 @@ namespace PwdMngrWasm.Pages
     public partial class Register
     {
         [Inject]
+#pragma warning disable CS8618
         public AuthenticationService AuthenticationService { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
         [Inject]
         public IJSRuntime JS { get; set; }
+#pragma warning restore CS8618
         public RegisterDTO RegisterForm = new();
+        private bool _registrationFailed = false;
 
         async Task RegisterClicked()
         {
-            var response = await AuthenticationService.RegisterAsync(RegisterForm);
+            var success = await AuthenticationService.RegisterAsync(RegisterForm);
 
-            if (!response)
+            if (!success)
             {
-                await JS.InvokeVoidAsync("alert", "Unsuccessfull.");
+                _registrationFailed = true;
                 RegisterForm = new();
                 return;
             }
-            await JS.InvokeVoidAsync("alert", "Success.");
-            RegisterForm = new();
-
             NavigationManager.NavigateTo("/", forceLoad: false);
         }
     }

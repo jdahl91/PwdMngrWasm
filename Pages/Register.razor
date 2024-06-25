@@ -26,5 +26,11 @@
             </div>
             <ValidationSummary />
         </EditForm>
+        @if (_registrationFailed)
+        {
+            <div class="alert alert-danger mt-3">
+                Registration failed. Please try again.
+            </div>
+        }
     </div>
 </div>
