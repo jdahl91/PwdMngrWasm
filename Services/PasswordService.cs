@@ -28,51 +28,38 @@ namespace PwdMngrWasm.Services
 
         public async Task<List<PasswordEntry>> GetPasswordEntriesAsync(string email)
         {
-            Console.WriteLine("Entered get pwd method");
-            System.Diagnostics.Debug.WriteLine("Entered get pwd method");
             if (string.IsNullOrEmpty(email))
                 return [];
 
-            Console.WriteLine(email);
-            System.Diagnostics.Debug.WriteLine(email);
             var jwt = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
 
-            Console.WriteLine(jwt);
-            System.Diagnostics.Debug.WriteLine(jwt);
-
-            var header = new AuthenticationHeaderValue("Bearer", jwt);
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwt); // new AuthenticationHeaderValue("Bearer", jwt);
-            Console.WriteLine(header.ToString());
-            System.Diagnostics.Debug.WriteLine(header.ToString());
-
-            Console.WriteLine("About to call api");
-            System.Diagnostics.Debug.WriteLine("About to call api");
-
-
-            //var stringContent = new StringContent(JsonSerializer.Serialize(email), Encoding.UTF8, "application/json");
-            
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
+                      
             var response = await _httpClient.PostAsJsonAsync("https://834627.xyz/api/password/get-all", email);
 
-            //var response = await _httpClient.PostAsync("https://834627.xyz/api/password/get-all", stringContent);
+            var jsonString = await response.Content.ReadAsStringAsync();
 
-            Console.WriteLine($"{response.ToString()}");
-            System.Diagnostics.Debug.WriteLine($"{response.ToString()}");
+            using var document = JsonDocument.Parse(jsonString);
+            var passwordEntriesElement = document.RootElement.GetProperty("value").GetProperty("passwordEntries");
+            var passwordEntries = new List<PasswordEntry>();
 
-            var result = await response.Content.ReadFromJsonAsync<GetAllPasswordsApiResonse>();
-
-            Console.WriteLine($"{result.ToString()}");
-            System.Diagnostics.Debug.WriteLine($"{result.ToString()}");
-
-            // only for debugging
-            if (result?.Flag == true)
+            foreach (var entryElement in passwordEntriesElement.EnumerateArray())
             {
-                Console.WriteLine("About to return success");
-                System.Diagnostics.Debug.WriteLine("About to return success");
-                return result.PasswordEntries;
+                var entry = new PasswordEntry
+                {
+                    EntryId = entryElement.GetProperty("entryId").GetInt32(),
+                    UserId = entryElement.GetProperty("userId").GetInt32(),
+                    Url = entryElement.GetProperty("url").GetString(),
+                    Name = entryElement.GetProperty("name").GetString(),
+                    Note = entryElement.GetProperty("note").GetString(),
+                    Username = entryElement.GetProperty("username").GetString(),
+                    Password = entryElement.GetProperty("password").GetString(),
+                    CreatedAt = entryElement.GetProperty("createdAt").GetDateTime(),
+                    UpdatedAt = entryElement.GetProperty("updatedAt").GetDateTime()
+                };
+                passwordEntries.Add(entry);
             }
-            Console.WriteLine("About to return fail");
-            System.Diagnostics.Debug.WriteLine("About to return fail");
-            return [];
+            return passwordEntries;
         }
 
         public async Task<bool> InsertPasswordEntryAsync(NewPasswordEntryDTO passwordEntry)
@@ -84,6 +71,7 @@ namespace PwdMngrWasm.Services
             return false;
         }
 
+        // returns error 
         public async Task<bool> UpdatePasswordEntryAsync(PasswordEntry passwordEntry)
         {
             var response = await _httpClient.PostAsJsonAsync("https://834627.xyz/api/password/update", passwordEntry);
@@ -94,3 +82,27 @@ namespace PwdMngrWasm.Services
         }
     }
 }
+
+//var result = await JsonSerializer.DeserializeAsync<GetAllPasswordsApiResonse>(responseStream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+//using var responseStream = await response.Content.ReadAsStreamAsync();
+
+//// Parse the JSON document
+//var jsonDocument = await JsonDocument.ParseAsync(responseStream);
+
+//// Deserialize the JSON document into the response model
+//var getAllPasswordsResponse = JsonSerializer.Deserialize<GetAllPasswordsApiResponse>(jsonDocument.RootElement.GetRawText());
+
+//// Access the deserialized data
+//Console.WriteLine($"Flag: {getAllPasswordsResponse.Flag}");
+//Console.WriteLine($"Message: {getAllPasswordsResponse.Message}");
+
+//// Access each password entry
+//foreach (var entry in getAllPasswordsResponse.PasswordEntries)
+//{
+//    Console.WriteLine($"EntryId: {entry.EntryId}, Name: {entry.Name}, URL: {entry.Url}");
+//    // Access other properties as needed
+//}
+
+// *** NEW WAY OF DESERIALIZING JSON ***
+//using var responseStream = await response.Content.ReadAsStreamAsync();

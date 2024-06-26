@@ -21,23 +21,24 @@ namespace PwdMngrWasm.Pages
         [Inject]
         public PasswordService PasswordService { get; set; }
         private List<PasswordEntry> _entries;
-        //private List<PasswordEntry>? _filteredEntries = null;
+        private List<PasswordEntry>? _filteredEntries = null;
         private string? _userEmail = null;
+        private string? _userName = null;
 #pragma warning restore CS8618
 
         protected override async Task OnInitializedAsync()
         {
-            var userEmail = await GetUser();
-
-            //_entries = await PasswordService.GetPasswordEntriesAsync(userEmail); // GetHardcodedEntries("original"); // await PasswordService.GetEntriesFromDatabase(email);
-            //_filteredEntries = new(_entries);
+            // var userEmail = 
+            await GetUser();
+            _entries = await PasswordService.GetPasswordEntriesAsync(_userEmail); // GetHardcodedEntries("original"); // await PasswordService.GetEntriesFromDatabase(email);
+            _filteredEntries = new(_entries);
         }
 
         private async Task TryLoad()
         {
             //var userEmail = await GetUser();
 
-            _entries = await PasswordService.GetPasswordEntriesAsync(_userEmail!); // GetHardcodedEntries("original"); // await PasswordService.GetEntriesFromDatabase(email);
+            //_entries = await PasswordService.GetPasswordEntriesAsync(_userEmail!); // GetHardcodedEntries("original"); // await PasswordService.GetEntriesFromDatabase(email);
             //_filteredEntries = new(_entries);
         }
 
@@ -47,27 +48,18 @@ namespace PwdMngrWasm.Pages
             var parameters = new DialogParameters<PasswordEntry> { { "Entry", (object)entry } };
 
             var dialog = await Dialog.ShowAsync<PasswordEntryDialog>("Password", parameters, options);
-            var result = await dialog.Result; // GetReturnValueAsync<PasswordEntry>();
-                                              // entry = result; // in my mind this inserts the object back into the list of entries, but needs testing
+            var result = await dialog.Result;
 
             if (!result.Canceled)
             {
-                // var userClaims = ((CustomAuthenticationStateProvider)authenticationStateProvider).GetAuthenticationStateAsync().Result.User.Claims;
-                // _userEmail = userClaims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email)?.Value ?? ""; // We can revisit this later, but I think it works, it will be null if the claim is not found
-                // await fetch new data from the database here and update the list of entries
-                // _entries = await PasswordService.GetEntriesFromDatabase(_userEmail);
-                _entries = GetHardcodedEntries("updated"); // await PasswordService.GetEntriesFromDatabase(_userEmail);
+                _entries = await PasswordService.GetPasswordEntriesAsync(_userEmail!);
                 _searchText = string.Empty;
                 FilterEntries();
-                StateHasChanged(); // the database should be updated here from the dialog so we have one point of truth
+                StateHasChanged();
             }
-            // Else the dialog was canceled
-
-            // this is where we should update the database with the new entry
-            // we should have an update method which should pass the updated entry back to the parent component
         }
 
-        // method to get the hardcoded entries to simulate a database
+        // Method used in development to get the hardcoded entries to simulate a database
         private static List<PasswordEntry> GetHardcodedEntries(string uniqueness)
         {
             var entries = new List<PasswordEntry>();
@@ -92,25 +84,22 @@ namespace PwdMngrWasm.Pages
 
         private void FilterEntries()
         {
-            //var searchText = _searchText.ToLower().Trim();
-            //if (string.IsNullOrWhiteSpace(searchText))
-            //{
-            //    _filteredEntries = _entries;
-            //}
-            //else
-            //{
-            //    _filteredEntries = _entries.Where(entry =>
-            //        entry.EntryId.ToString().Contains(searchText) ||
-            //        entry.UserId.ToString().Contains(searchText) ||
-            //        entry.Url!.ToLower().Contains(searchText) ||
-            //        entry.Name!.ToLower().Contains(searchText) ||
-            //        entry.Note!.ToLower().Contains(searchText) ||
-            //        entry.Username!.ToLower().Contains(searchText) ||
-            //        entry.Password!.ToLower().Contains(searchText) ||
-            //        entry.CreatedAt.ToString().Contains(searchText) ||
-            //        entry.UpdatedAt.ToString().Contains(searchText)
-            //    ).ToList();
-            //}
+            var searchText = _searchText.ToLower().Trim();
+            if (string.IsNullOrWhiteSpace(searchText))
+            {
+                _filteredEntries = _entries;
+            }
+            else
+            {
+                _filteredEntries = _entries.Where(entry =>
+                    entry.UserId.ToString().Contains(searchText) ||
+                    entry.Url!.ToLower().Contains(searchText) ||
+                    entry.Name!.ToLower().Contains(searchText) ||
+                    entry.Note!.ToLower().Contains(searchText) ||
+                    entry.Username!.ToLower().Contains(searchText) ||
+                    entry.Password!.ToLower().Contains(searchText)
+                ).ToList();
+            }
         }
 
         private async Task<string> GetUser()
@@ -120,7 +109,9 @@ namespace PwdMngrWasm.Pages
                 var authenticationState = await ((CustomAuthenticationStateProvider)authenticationStateProvider).GetAuthenticationStateAsync();
                 var userClaims = authenticationState.User.Claims;
                 var userEmail = userClaims.FirstOrDefault(claim => claim.Type == ClaimTypes.Email)?.Value ?? "";
+                var userName = userClaims.FirstOrDefault(claim => claim.Type == ClaimTypes.Name)?.Value ?? "";
                 _userEmail = userEmail;
+                _userName = userName;
                 return userEmail;
             }
             catch (Exception ex)

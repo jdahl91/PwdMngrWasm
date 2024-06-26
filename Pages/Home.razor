@@ -38,17 +38,16 @@
     <Authorized>
         <MudTextField T="string" Label="Search" @bind-Value="@_searchText" Immediate="true" TextChanged="FilterEntries" @onblur="FilterEntries" Clearable="true"></MudTextField>
 
-        <MudButton OnClick="TryLoad">Load Pwds Test</MudButton>
+        @* <MudButton OnClick="TryLoad">Load Pwds Test</MudButton> *@
 
         @if (_userEmail is not null)
         {
-            <p>@_userEmail</p>
-
+            <p>Welcome! @_userName</p>
         }
-        @if (_entries is not null)
+        @if (_filteredEntries is not null)
         {
             <MudList>
-                @foreach (var entry in _entries)
+                @foreach (var entry in _filteredEntries)
                 {
                     <MudListItem Style="margin-block:10px;">
                         <MudCard Style="padding:7px;">
