@@ -1,7 +1,11 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
+	  <!--I added the blow two lines to prevent compression when hosting on GitHub Pages-->
+	<BlazorCacheBootResources>false</BlazorCacheBootResources>
+	<CompressionEnabled>false</CompressionEnabled>
+	  <!--end-->
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
