@@ -11,7 +11,6 @@ namespace PwdMngrWasm.State
     public class CustomAuthenticationStateProvider : AuthenticationStateProvider
     {
         private readonly IJSRuntime _jsRuntime;
-        //private string? _jwtToken = null;
         private string? _refreshToken = null;
 
         public CustomAuthenticationStateProvider(IJSRuntime jsRuntime)
@@ -19,16 +18,11 @@ namespace PwdMngrWasm.State
             _jsRuntime = jsRuntime;
         }
 
-        public async Task<string?> GetJwt()
-        {
-            return await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
-        }
+        public async Task<string?> GetJwt() => await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
 
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
-            // for now this breaks the app if there is a mismatch between the token in the local storage and the token in the provider
-            // lets reviw this later
-            var jwtToken = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
+            var jwtToken = await GetJwt();
 
             if (string.IsNullOrEmpty(jwtToken))
             {
@@ -43,7 +37,6 @@ namespace PwdMngrWasm.State
 
         public async Task MarkUserAsAuthenticated(string jwt, string refreshToken)
         {
-            //var _jwtToken = jwt;
             await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "authToken", jwt);
             await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "refreshToken", refreshToken);
             var identity = CreateClaimsIdentityFromJwt(jwt);
@@ -54,7 +47,6 @@ namespace PwdMngrWasm.State
 
         public async Task MarkUserAsLoggedOut()
         {
-            //_jwtToken = null;
             await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", "authToken");
             await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", "refreshToken");
             var identity = new ClaimsIdentity();
