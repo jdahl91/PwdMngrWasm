@@ -12,8 +12,8 @@
         <MudSpacer />
         <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" OnClick="() => OpenTopCornerDialog()" />
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
-        <NavMenu ToggleMethodReference="DarkModeToggle"/>
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2" Variant="@DrawerVariant.Temporary">
+        <NavMenu ToggleMethodReference="DarkModeToggle" />
     </MudDrawer>
     <MudMainContent Style="display:flex;flex-direction:column;flex-start;margin:20px;">
         @Body

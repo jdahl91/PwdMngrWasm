@@ -31,6 +31,7 @@ namespace PwdMngrWasm.Pages
                 LoginForm = new();
                 return;
             }
+            // TODO : Make sure we navigate to the correct page, "/" -- base path set in index.html
             NavigationManager.NavigateTo("/", forceLoad: false);
         }
     }

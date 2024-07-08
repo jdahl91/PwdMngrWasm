@@ -35,10 +35,11 @@ namespace PwdMngrWasm.State
             return new AuthenticationState(user);
         }
 
-        public async Task MarkUserAsAuthenticated(string jwt, string refreshToken)
+        public async Task MarkUserAsAuthenticated(string jwt, string refreshToken, Guid userGuid)
         {
             await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "authToken", jwt);
             await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "refreshToken", refreshToken);
+            await _jsRuntime.InvokeVoidAsync("localStorage.setItem", "userGuid", userGuid);
             var identity = CreateClaimsIdentityFromJwt(jwt);
             var user = new ClaimsPrincipal(identity);
 
@@ -49,6 +50,7 @@ namespace PwdMngrWasm.State
         {
             await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", "authToken");
             await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", "refreshToken");
+            await _jsRuntime.InvokeVoidAsync("localStorage.removeItem", "userGuid");
             var identity = new ClaimsIdentity();
             var user = new ClaimsPrincipal(identity);
 

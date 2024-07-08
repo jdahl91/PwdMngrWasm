@@ -15,6 +15,8 @@ namespace PwdMngrWasm.Pages
 #pragma warning disable CS8618
         private string _searchText = string.Empty;
         [Inject]
+        public NavigationManager NavigationManager { get; set; }
+        [Inject]
         public AuthenticationStateProvider authenticationStateProvider { get; set; }
         [Inject]
         public IJSRuntime JSRuntime { get; set; }
@@ -28,7 +30,7 @@ namespace PwdMngrWasm.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            // var userEmail = 
+            //await JSRuntime.InvokeVoidAsync("clearLocalStorage");
             await GetUser();
             _entries = await PasswordService.GetPasswordEntriesAsync(_userEmail); // GetHardcodedEntries("original"); // await PasswordService.GetEntriesFromDatabase(email);
             _filteredEntries = new(_entries);
@@ -59,6 +61,11 @@ namespace PwdMngrWasm.Pages
             }
         }
 
+        private void AddEntry()
+        {
+            NavigationManager.NavigateTo("/add", forceLoad: false);
+        }
+
         // Method used in development to get the hardcoded entries to simulate a database
         private static List<PasswordEntry> GetHardcodedEntries(string uniqueness)
         {
@@ -68,8 +75,8 @@ namespace PwdMngrWasm.Pages
             {
                 entries.Add(new PasswordEntry
                 {
-                    EntryId = i,
-                    UserId = 1,
+                    EntryId = new Guid(),
+                    UserId = new Guid(),
                     Url = $"https://{uniqueness}.com/{i}",
                     Name = $"{uniqueness}Example {i}",
                     Note = $"This is an {uniqueness}example note for entry {i}.",

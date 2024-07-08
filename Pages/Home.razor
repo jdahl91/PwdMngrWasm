@@ -36,9 +36,8 @@
         </MudContainer>
     </NotAuthorized>
     <Authorized>
+        <MudButton Variant="Variant.Filled" OnClick="AddEntry">Add</MudButton>
         <MudTextField T="string" Label="Search" @bind-Value="@_searchText" Immediate="true" TextChanged="FilterEntries" @onblur="FilterEntries" Clearable="true"></MudTextField>
-
-        @* <MudButton OnClick="TryLoad">Load Pwds Test</MudButton> *@
 
         @if (_userEmail is not null)
         {

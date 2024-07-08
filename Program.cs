@@ -5,6 +5,7 @@ using MudBlazor.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using PwdMngrWasm.Services;
 using PwdMngrWasm.State;
+using Microsoft.JSInterop;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -23,4 +24,15 @@ builder.Services.AddAuthorizationCore(o =>
     o.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
 });
 
-await builder.Build().RunAsync();
+var app = builder.Build();
+
+//using (var scope = app.Services.CreateScope())
+//{
+//    var jsRuntime = app.Services.GetRequiredService<IJSRuntime>();
+//    await jsRuntime.InvokeVoidAsync("clearLocalStorage");
+//    //var storageService = scope.ServiceProvider
+//}
+
+await app.RunAsync();
+
+//await builder.Build().RunAsync();

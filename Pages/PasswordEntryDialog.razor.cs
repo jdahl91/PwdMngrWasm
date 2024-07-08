@@ -14,12 +14,12 @@ namespace PwdMngrWasm.Pages
         public PasswordEntry Entry { get; set; }
         [Inject]
         public PasswordService PasswordService { get; set; }
-        private PasswordEntry _localEntry;
+        private UpdatePasswordEntryDTO _localEntry;
 #pragma warning restore 8618
 
         protected override void OnParametersSet()
         {
-            _localEntry = new PasswordEntry(Entry);
+            _localEntry = new UpdatePasswordEntryDTO(Entry);
         }
 
         private async Task Submit()

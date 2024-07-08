@@ -26,6 +26,7 @@ namespace PwdMngrWasm.Services
             _authenticationStateProvider = (CustomAuthenticationStateProvider)authenticationStateProvider;
         }
 
+        // revisit guid after changing the api
         public async Task<bool> LoginAsync(LoginDTO form)
         {
             var httpResponse = await _httpClient.PostAsJsonAsync("https://834627.xyz/api/account/login", form);
@@ -37,11 +38,17 @@ namespace PwdMngrWasm.Services
 
             var jwtToken = loginResponse?.JwtToken;
             var refreshToken = loginResponse?.RefreshToken;
+            var userGuidString = loginResponse?.UserGuid;
+            //var userGuid = Guid.Parse(userGuidString);
+
+            // for debugging
+            if (!Guid.TryParseExact(userGuidString, "D", out Guid userGuid)) return false;
+            else Console.WriteLine(userGuid.ToString());
 
             if (string.IsNullOrEmpty(jwtToken) || string.IsNullOrEmpty(refreshToken))
                 return false;
 
-            await ((CustomAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(jwtToken, refreshToken);
+            await ((CustomAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(jwtToken, refreshToken, userGuid);
 
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);
             return true;
@@ -75,9 +82,12 @@ namespace PwdMngrWasm.Services
             return true;
         }
 
+        // Need to revisit userGuid here
         public async Task<bool> RefreshTokensAsync()
         {
             var oldRefreshToken = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "refreshToken");
+            var userGuidString = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "userGuid");
+            var userGuid = Guid.Parse(userGuidString);
 
             if (string.IsNullOrEmpty(oldRefreshToken))
                 return false;
@@ -98,7 +108,7 @@ namespace PwdMngrWasm.Services
             if (string.IsNullOrEmpty(jwtToken) || string.IsNullOrEmpty(newRefreshToken))
                 return false;
 
-            await ((CustomAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(jwtToken, newRefreshToken);
+            await ((CustomAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsAuthenticated(jwtToken, newRefreshToken, userGuid);
 
             _httpClient.DefaultRequestHeaders.Authorization = null;
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwtToken);

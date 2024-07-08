@@ -23,6 +23,16 @@ namespace PwdMngrWasm.Services
             _jsRuntime = jsRuntime;
         }
 
+        public async Task<Guid> GetUserGuid()
+        {
+            var userGuidString = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "userGuid");
+
+            if (!Guid.TryParseExact(userGuidString, "D", out Guid userGuid)) 
+                return new Guid();
+            else 
+                return userGuid;
+        }
+
         public async Task<List<PasswordEntry>> GetPasswordEntriesAsync(string email)
         {
             if (string.IsNullOrEmpty(email))
@@ -46,8 +56,8 @@ namespace PwdMngrWasm.Services
                 {
                     var entry = new PasswordEntry
                     {
-                        EntryId = entryElement.GetProperty("entryId").GetInt32(),
-                        UserId = entryElement.GetProperty("userId").GetInt32(),
+                        EntryId = entryElement.GetProperty("entryId").GetGuid(),
+                        UserId = entryElement.GetProperty("userId").GetGuid(),
                         Url = entryElement.GetProperty("url").GetString(),
                         Name = entryElement.GetProperty("name").GetString(),
                         Note = entryElement.GetProperty("note").GetString(),
@@ -75,8 +85,7 @@ namespace PwdMngrWasm.Services
             return false;
         }
 
-        // returns error 
-        public async Task<bool> UpdatePasswordEntryAsync(PasswordEntry passwordEntry)
+        public async Task<bool> UpdatePasswordEntryAsync(UpdatePasswordEntryDTO passwordEntry)
         {
             var response = await _httpClient.PostAsJsonAsync("https://834627.xyz/api/password/update", passwordEntry);
             var result = await response.Content.ReadFromJsonAsync<ApiResponse>();
