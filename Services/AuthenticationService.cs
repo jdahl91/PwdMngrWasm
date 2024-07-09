@@ -18,6 +18,7 @@ namespace PwdMngrWasm.Services
         private readonly HttpClient _httpClient;
         private readonly IJSRuntime _jsRuntime;
         private readonly CustomAuthenticationStateProvider _authenticationStateProvider;
+        private readonly string _baseAddress = "https://834627.xyz/api/account";
 
         public AuthenticationService(HttpClient httpClient, IJSRuntime jsRuntime, AuthenticationStateProvider authenticationStateProvider)
         {
@@ -29,7 +30,7 @@ namespace PwdMngrWasm.Services
         // revisit guid after changing the api
         public async Task<bool> LoginAsync(LoginDTO form)
         {
-            var httpResponse = await _httpClient.PostAsJsonAsync("https://834627.xyz/api/account/login", form);
+            var httpResponse = await _httpClient.PostAsJsonAsync(_baseAddress + "/login", form);
             
             if (!httpResponse.IsSuccessStatusCode)
                 return false;
@@ -56,7 +57,7 @@ namespace PwdMngrWasm.Services
 
         public async Task<bool> LogoutAsync()
         {
-            var response = await _httpClient.PostAsync("https://834627.xyz/api/account/logout", null);
+            var response = await _httpClient.PostAsync(_baseAddress + "/logout", null);
             if (!response.IsSuccessStatusCode)
                 return false;
             
@@ -68,7 +69,7 @@ namespace PwdMngrWasm.Services
 
         public async Task<bool> RegisterAsync(RegisterDTO form)
         {
-            var response = await _httpClient.PostAsJsonAsync("https://834627.xyz/api/account/register", form);
+            var response = await _httpClient.PostAsJsonAsync(_baseAddress + "/register", form);
             if (!response.IsSuccessStatusCode)
                 return false;
 
@@ -92,7 +93,7 @@ namespace PwdMngrWasm.Services
             if (string.IsNullOrEmpty(oldRefreshToken))
                 return false;
 
-            var response = await _httpClient.PostAsJsonAsync("https://834627.xyz/api/account/refresh-token", oldRefreshToken);
+            var response = await _httpClient.PostAsJsonAsync(_baseAddress + "/refresh-token", oldRefreshToken);
 
             if (!response.IsSuccessStatusCode)
                 return false;

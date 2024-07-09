@@ -23,6 +23,9 @@ namespace PwdMngrWasm.Pages
         private async Task AddPasswordEntry()
         {
             _newPasswordEntry.UserId = _userGuid;
+
+            // success is not a boolean, it needsto be a response object from the server which we deserialize
+            // insertpasswordentryasync works 
             var success = await PasswordService.InsertPasswordEntryAsync(_newPasswordEntry);
 
             if (success)

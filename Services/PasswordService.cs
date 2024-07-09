@@ -16,6 +16,7 @@ namespace PwdMngrWasm.Services
     {
         private readonly HttpClient _httpClient;
         private readonly IJSRuntime _jsRuntime;
+        private readonly string _baseAddress = "https://834627.xyz/api/password";
 
         public PasswordService(HttpClient httpClient, IJSRuntime jsRuntime)
         {
@@ -45,7 +46,7 @@ namespace PwdMngrWasm.Services
 
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
 
-                var response = await _httpClient.PostAsJsonAsync("https://834627.xyz/api/password/get-all", email);
+                var response = await _httpClient.PostAsJsonAsync(_baseAddress + "/get-all", email);
 
                 var jsonString = await response.Content.ReadAsStringAsync();
 
@@ -78,7 +79,7 @@ namespace PwdMngrWasm.Services
 
         public async Task<bool> InsertPasswordEntryAsync(NewPasswordEntryDTO passwordEntry)
         {
-            var response = await _httpClient.PostAsJsonAsync("https://834627.xyz/api/password/insert", passwordEntry);
+            var response = await _httpClient.PostAsJsonAsync(_baseAddress + "/insert", passwordEntry);
             var result = await response.Content.ReadFromJsonAsync<ApiResponse>();
             if (result?.Flag == true)
                 return true;
@@ -87,7 +88,7 @@ namespace PwdMngrWasm.Services
 
         public async Task<bool> UpdatePasswordEntryAsync(UpdatePasswordEntryDTO passwordEntry)
         {
-            var response = await _httpClient.PostAsJsonAsync("https://834627.xyz/api/password/update", passwordEntry);
+            var response = await _httpClient.PostAsJsonAsync(_baseAddress + "/update", passwordEntry);
             var result = await response.Content.ReadFromJsonAsync<ApiResponse>();
             if (result?.Flag == true)
                 return true;
