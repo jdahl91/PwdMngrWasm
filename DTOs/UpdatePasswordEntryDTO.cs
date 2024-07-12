@@ -1,22 +1,29 @@
-﻿namespace PwdMngrWasm.DTOs
+﻿using System.Text.Json.Serialization;
+
+namespace PwdMngrWasm.DTOs
 {
     public class UpdatePasswordEntryDTO
     {
-        public UpdatePasswordEntryDTO() { }
         public UpdatePasswordEntryDTO(PasswordEntry entry)
         {
-            this.EntryId = entry.EntryId;
+            this.EntryId = entry.EntryId.ToString();
             this.Url = entry.Url ?? string.Empty;
             this.Name = entry.Name ?? string.Empty;
             this.Note = entry.Note ?? string.Empty;
             this.Username = entry.Username ?? string.Empty;
             this.Password = entry.Password ?? string.Empty;
         }
-        public Guid EntryId { get; set; }
-        public string? Url { get; set; }
-        public string? Name { get; set; }
-        public string? Note { get; set; }
-        public string? Username { get; set; }
-        public string? Password { get; set; }
+        [JsonPropertyName("entryId")]
+        public string EntryId { get; set; }
+        [JsonPropertyName("url")]
+        public string Url { get; set; }
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+        [JsonPropertyName("note")]
+        public string Note { get; set; }
+        [JsonPropertyName("username")]
+        public string Username { get; set; }
+        [JsonPropertyName("password")]
+        public string Password { get; set; }
     }
 }

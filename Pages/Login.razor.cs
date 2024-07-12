@@ -14,7 +14,7 @@ namespace PwdMngrWasm.Pages
         [Inject]
         public NavigationManager NavigationManager { get; set; }
         [Inject]
-        public AuthenticationService AuthenticationService { get; set; }
+        public IAuthenticationService AuthenticationService { get; set; }
         [Inject]
         public IJSRuntime JS { get; set; }
 #pragma warning restore CS8618
@@ -28,11 +28,18 @@ namespace PwdMngrWasm.Pages
             if (!success)
             {
                 _loginFailed = true;
+                _ = ResetWarning();
                 LoginForm = new();
                 return;
             }
-            // TODO : Make sure we navigate to the correct page, "/" -- base path set in index.html
             NavigationManager.NavigateTo("/", forceLoad: false);
+        }
+
+        private async Task ResetWarning()
+        {
+            await Task.Delay(5000);
+            _loginFailed = false;
+            StateHasChanged();
         }
     }
 }

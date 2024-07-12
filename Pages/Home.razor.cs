@@ -21,27 +21,20 @@ namespace PwdMngrWasm.Pages
         [Inject]
         public IJSRuntime JSRuntime { get; set; }
         [Inject]
-        public PasswordService PasswordService { get; set; }
+        public IPasswordService PasswordService { get; set; }
         private List<PasswordEntry> _entries;
         private List<PasswordEntry>? _filteredEntries = null;
         private string? _userEmail = null;
         private string? _userName = null;
+        private GetAllPasswordsDTO _getAllPasswordsDTO = new();
 #pragma warning restore CS8618
 
         protected override async Task OnInitializedAsync()
         {
-            //await JSRuntime.InvokeVoidAsync("clearLocalStorage");
             await GetUser();
-            _entries = await PasswordService.GetPasswordEntriesAsync(_userEmail); // GetHardcodedEntries("original"); // await PasswordService.GetEntriesFromDatabase(email);
+            _getAllPasswordsDTO.Email = _userEmail!;
+            _entries = await PasswordService.GetPasswordEntriesAsync(_getAllPasswordsDTO);
             _filteredEntries = new(_entries);
-        }
-
-        private async Task TryLoad()
-        {
-            //var userEmail = await GetUser();
-
-            //_entries = await PasswordService.GetPasswordEntriesAsync(_userEmail!); // GetHardcodedEntries("original"); // await PasswordService.GetEntriesFromDatabase(email);
-            //_filteredEntries = new(_entries);
         }
 
         private async Task OpenDialog(PasswordEntry entry)
@@ -54,40 +47,14 @@ namespace PwdMngrWasm.Pages
 
             if (!result.Canceled)
             {
-                _entries = await PasswordService.GetPasswordEntriesAsync(_userEmail!);
+                _entries = await PasswordService.GetPasswordEntriesAsync(_getAllPasswordsDTO);
                 _searchText = string.Empty;
                 FilterEntries();
                 StateHasChanged();
             }
         }
 
-        private void AddEntry()
-        {
-            NavigationManager.NavigateTo("/add", forceLoad: false);
-        }
-
-        // Method used in development to get the hardcoded entries to simulate a database
-        private static List<PasswordEntry> GetHardcodedEntries(string uniqueness)
-        {
-            var entries = new List<PasswordEntry>();
-
-            for (int i = 1; i <= 20; i++)
-            {
-                entries.Add(new PasswordEntry
-                {
-                    EntryId = new Guid(),
-                    UserId = new Guid(),
-                    Url = $"https://{uniqueness}.com/{i}",
-                    Name = $"{uniqueness}Example {i}",
-                    Note = $"This is an {uniqueness}example note for entry {i}.",
-                    Username = $"user{i}{uniqueness}",
-                    Password = $"password{i}{uniqueness}",
-                    CreatedAt = DateTime.Now,
-                    UpdatedAt = DateTime.Now
-                });
-            }
-            return entries;
-        }
+        private void AddEntry() => NavigationManager.NavigateTo("/add", forceLoad: false);
 
         private void FilterEntries()
         {
@@ -125,6 +92,33 @@ namespace PwdMngrWasm.Pages
             {
                 return ex.Message;
             }
+        }
+
+        /// <summary>
+        /// Method used in development to get hardcoded entries to simulate a database query.
+        /// </summary>
+        /// <param name="uniqueness"></param>
+        /// <returns></returns>
+        private static List<PasswordEntry> GetHardcodedEntries(string uniqueness)
+        {
+            var entries = new List<PasswordEntry>();
+
+            for (int i = 1; i <= 20; i++)
+            {
+                entries.Add(new PasswordEntry
+                {
+                    EntryId = new Guid(),
+                    UserId = new Guid(),
+                    Url = $"https://{uniqueness}.com/{i}",
+                    Name = $"{uniqueness}Example {i}",
+                    Note = $"This is an {uniqueness}example note for entry {i}.",
+                    Username = $"user{i}{uniqueness}",
+                    Password = $"password{i}{uniqueness}",
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now
+                });
+            }
+            return entries;
         }
     }
 }

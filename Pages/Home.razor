@@ -39,10 +39,6 @@
         <MudButton Variant="Variant.Filled" OnClick="AddEntry">Add</MudButton>
         <MudTextField T="string" Label="Search" @bind-Value="@_searchText" Immediate="true" TextChanged="FilterEntries" @onblur="FilterEntries" Clearable="true"></MudTextField>
 
-        @if (_userEmail is not null)
-        {
-            <p>Welcome! @_userName</p>
-        }
         @if (_filteredEntries is not null)
         {
             <MudList>

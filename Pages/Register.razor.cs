@@ -10,7 +10,7 @@ namespace PwdMngrWasm.Pages
     {
         [Inject]
 #pragma warning disable CS8618
-        public AuthenticationService AuthenticationService { get; set; }
+        public IAuthenticationService AuthenticationService { get; set; }
         [Inject]
         public NavigationManager NavigationManager { get; set; }
         [Inject]
@@ -19,18 +19,25 @@ namespace PwdMngrWasm.Pages
         public RegisterDTO RegisterForm = new();
         private bool _registrationFailed = false;
 
-        async Task RegisterClicked()
+        private async Task RegisterClicked()
         {
             var success = await AuthenticationService.RegisterAsync(RegisterForm);
 
             if (!success)
             {
                 _registrationFailed = true;
+                _ = ResetWarning();
                 RegisterForm = new();
                 return;
             }
-            // TODO : Make sure we navigate to the correct page, "/" was wrong since github pages is hosted in a subdirectory
             NavigationManager.NavigateTo("/", forceLoad: false);
+        }
+
+        private async Task ResetWarning()
+        {
+            await Task.Delay(5000);
+            _registrationFailed = false;
+            StateHasChanged();
         }
     }
 }

@@ -12,7 +12,7 @@ using System.Text;
 
 namespace PwdMngrWasm.Services
 {
-    public class PasswordService
+    public class PasswordService : IPasswordService
     {
         private readonly HttpClient _httpClient;
         private readonly IJSRuntime _jsRuntime;
@@ -24,19 +24,9 @@ namespace PwdMngrWasm.Services
             _jsRuntime = jsRuntime;
         }
 
-        public async Task<Guid> GetUserGuid()
+        public async Task<List<PasswordEntry>> GetPasswordEntriesAsync(GetAllPasswordsDTO form)
         {
-            var userGuidString = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "userGuid");
-
-            if (!Guid.TryParseExact(userGuidString, "D", out Guid userGuid)) 
-                return new Guid();
-            else 
-                return userGuid;
-        }
-
-        public async Task<List<PasswordEntry>> GetPasswordEntriesAsync(string email)
-        {
-            if (string.IsNullOrEmpty(email))
+            if (string.IsNullOrEmpty(form.Email))
                 return [];
 
             var passwordEntries = new List<PasswordEntry>();
@@ -45,8 +35,9 @@ namespace PwdMngrWasm.Services
                 var jwt = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "authToken");
 
                 _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", jwt);
+                form.UserId = await GetUserGuid();
 
-                var response = await _httpClient.PostAsJsonAsync(_baseAddress + "/get-all", email);
+                var response = await _httpClient.PostAsJsonAsync(_baseAddress + "/get-all", form);
 
                 var jsonString = await response.Content.ReadAsStringAsync();
 
@@ -79,9 +70,14 @@ namespace PwdMngrWasm.Services
 
         public async Task<bool> InsertPasswordEntryAsync(NewPasswordEntryDTO passwordEntry)
         {
-            var response = await _httpClient.PostAsJsonAsync(_baseAddress + "/insert", passwordEntry);
-            var result = await response.Content.ReadFromJsonAsync<ApiResponse>();
-            if (result?.Flag == true)
+            passwordEntry.UserId = await GetUserGuid();
+            var response = await _httpClient.PostAsJsonAsync(_baseAddress + "/insert", passwordEntry);           
+            var jsonString = await response.Content.ReadAsStringAsync();
+
+            using var document = JsonDocument.Parse(jsonString);
+            var flag = document.RootElement.GetProperty("value").GetProperty("flag").GetBoolean();
+
+            if (flag == true)
                 return true;
             return false;
         }
@@ -89,10 +85,24 @@ namespace PwdMngrWasm.Services
         public async Task<bool> UpdatePasswordEntryAsync(UpdatePasswordEntryDTO passwordEntry)
         {
             var response = await _httpClient.PostAsJsonAsync(_baseAddress + "/update", passwordEntry);
-            var result = await response.Content.ReadFromJsonAsync<ApiResponse>();
-            if (result?.Flag == true)
+            var jsonString = await response.Content.ReadAsStringAsync();
+
+            using var document = JsonDocument.Parse(jsonString);
+            var flag = document.RootElement.GetProperty("value").GetProperty("flag").GetBoolean();
+
+            if (flag == true)
                 return true;
             return false;
+        }
+
+        private async Task<Guid> GetUserGuid()
+        {
+            var userGuidString = await _jsRuntime.InvokeAsync<string>("localStorage.getItem", "userGuid");
+
+            if (!Guid.TryParseExact(userGuidString, "D", out Guid userGuid))
+                return new Guid();
+            else
+                return userGuid;
         }
     }
 }

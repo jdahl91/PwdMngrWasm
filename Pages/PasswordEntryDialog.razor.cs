@@ -13,7 +13,7 @@ namespace PwdMngrWasm.Pages
         [Parameter]
         public PasswordEntry Entry { get; set; }
         [Inject]
-        public PasswordService PasswordService { get; set; }
+        public IPasswordService PasswordService { get; set; }
         private UpdatePasswordEntryDTO _localEntry;
 #pragma warning restore 8618
 
@@ -25,14 +25,7 @@ namespace PwdMngrWasm.Pages
         private async Task Submit()
         {
             var success = await PasswordService.UpdatePasswordEntryAsync(_localEntry);
-            if (!success)
-            {
-                System.Diagnostics.Debug.WriteLine("Failed to update password entry");
-                Console.WriteLine("Failed to update password entry");
-                Cancel();
-            }
-            System.Diagnostics.Debug.WriteLine("Success password entry update!");
-            Console.WriteLine("Success password entry update!");
+            if (!success) { Cancel(); }
             MudDialog.Close(DialogResult.Ok(true));
         }
         private void Cancel() => MudDialog.Cancel();

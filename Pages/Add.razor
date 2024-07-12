@@ -2,11 +2,6 @@
 
 <div class="container-fluid flex-center">
 
-    @if (!string.IsNullOrEmpty(_userGuid.ToString()))
-    {
-        <p>@_userGuid.ToString()</p>
-    }
-
     <div>
         <h2>Add new password entry</h2>
         <EditForm Model="@_newPasswordEntry" OnValidSubmit="AddPasswordEntry">
@@ -19,7 +14,7 @@
 
             <div class="form-group mt-3">
                 <label class="form-label">Name</label>
-                <InputText type="password" @bind-Value="_newPasswordEntry.Name" class="form-control"></InputText>
+                <InputText @bind-Value="_newPasswordEntry.Name" class="form-control"></InputText>
             </div>
 
             <div class="form-group">
@@ -37,17 +32,25 @@
                 <InputText type="password" @bind-Value="_newPasswordEntry.Password" class="form-control"></InputText>
             </div>
 
-            <div class="form-group mt-3">
-                <button class="btn btn-primary" type="submit">Submit</button>
-            </div>
+            <MudStack Row="true">
+                <div class="form-group mt-3">
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                </div>
+
+                <div class="form-group mt-3">
+                    <button class="btn btn-primary" @onclick="Return" type="button">Return</button>
+                </div>
+            </MudStack>
 
             <ValidationSummary />
         </EditForm>
+
         @if (_addPasswordFailed)
         {
             <div class="alert alert-danger mt-3">
                 Add password failed. Please try again.
             </div>
         }
+
     </div>
 </div>

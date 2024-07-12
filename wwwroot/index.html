@@ -33,9 +33,27 @@
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div>
+
+    <!--This script appears to do what I want but may need revisiting.-->
+    <script>
+        (function clearLocalStorageIfJwtExpired() {
+            const token = localStorage.getItem('authToken');
+
+            if (token) {
+                const payloadBase64 = token.split('.')[1];
+                const decodedPayload = atob(payloadBase64);
+                const payload = JSON.parse(decodedPayload);
+
+                const now = Math.floor(Date.now() / 1000);
+
+                if (payload.exp && payload.exp < now) {
+                    localStorage.clear();
+                }
+            }
+        })();
+    </script>
     <script src="_framework/blazor.webassembly.js"></script>
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
-    <script src="site.js"></script>
 </body>
 
 </html>

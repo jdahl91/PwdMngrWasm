@@ -10,22 +10,19 @@ namespace PwdMngrWasm.Pages
 #pragma warning disable CS8618
         public NavigationManager NavigationManager { get; set; }
         [Inject]
-        public PasswordService PasswordService { get; set; }
+        public IPasswordService PasswordService { get; set; }
 #pragma warning restore CS8618
         private NewPasswordEntryDTO _newPasswordEntry = new();
         private bool _addPasswordFailed = false;
-        private Guid _userGuid;
 
-        protected override async Task OnInitializedAsync()
-        {
-            _userGuid = await PasswordService.GetUserGuid();
-        }
         private async Task AddPasswordEntry()
         {
-            _newPasswordEntry.UserId = _userGuid;
-
-            // success is not a boolean, it needsto be a response object from the server which we deserialize
-            // insertpasswordentryasync works 
+            if (string.IsNullOrWhiteSpace(_newPasswordEntry.Name) || string.IsNullOrWhiteSpace(_newPasswordEntry.Password))
+            {
+                _addPasswordFailed = true;
+                _ = ResetWarning();
+                return;
+            }
             var success = await PasswordService.InsertPasswordEntryAsync(_newPasswordEntry);
 
             if (success)
@@ -35,8 +32,17 @@ namespace PwdMngrWasm.Pages
             else
             {
                 _addPasswordFailed = true;
-                //_newPasswordEntry = new();
+                _ = ResetWarning();
             }
         }
+
+        private async Task ResetWarning()
+        {
+            await Task.Delay(5000);
+            _addPasswordFailed = false;
+            StateHasChanged();
+        }
+
+        private void Return() => NavigationManager.NavigateTo("/", forceLoad: false);
     }
 }

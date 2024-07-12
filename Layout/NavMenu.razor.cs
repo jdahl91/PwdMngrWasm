@@ -12,7 +12,7 @@ namespace PwdMngrWasm.Layout
         [Inject]
         public NavigationManager NavigationManager { get; set; }
         [Inject]
-        public AuthenticationService AuthenticationService { get; set; }
+        public IAuthenticationService AuthenticationService { get; set; }
         [Inject]
         public IJSRuntime JS { get; set; }
         [Parameter]

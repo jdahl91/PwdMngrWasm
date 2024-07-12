@@ -13,7 +13,7 @@ using static PwdMngrWasm.Responses.CustomResponses;
 namespace PwdMngrWasm.Services
 {
     // this class will communicate with the server to authenticate the user
-    public class AuthenticationService
+    public class AuthenticationService : IAuthenticationService
     {
         private readonly HttpClient _httpClient;
         private readonly IJSRuntime _jsRuntime;
