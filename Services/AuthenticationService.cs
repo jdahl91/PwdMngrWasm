@@ -40,11 +40,7 @@ namespace PwdMngrWasm.Services
             var jwtToken = loginResponse?.JwtToken;
             var refreshToken = loginResponse?.RefreshToken;
             var userGuidString = loginResponse?.UserGuid;
-            //var userGuid = Guid.Parse(userGuidString);
-
-            // for debugging, probably remove later
-            if (!Guid.TryParseExact(userGuidString, "D", out Guid userGuid)) return false;
-            else Console.WriteLine("Logged from authService: " + userGuid.ToString());
+            Guid.TryParseExact(userGuidString, "D", out Guid userGuid);
 
             if (string.IsNullOrEmpty(jwtToken) || string.IsNullOrEmpty(refreshToken))
                 return false;
