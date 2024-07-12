@@ -30,7 +30,7 @@ namespace PwdMngrWasm.Pages
                 RegisterForm = new();
                 return;
             }
-            NavigationManager.NavigateTo("/", forceLoad: false);
+            NavigationManager.NavigateTo("/PW9", forceLoad: false);
         }
 
         private async Task ResetWarning()

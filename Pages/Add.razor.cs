@@ -27,7 +27,8 @@ namespace PwdMngrWasm.Pages
 
             if (success)
             {
-                NavigationManager.NavigateTo("/", forceLoad: false);
+                // This should naviagte home, testing with PW9
+                NavigationManager.NavigateTo("/PW9", forceLoad: false);
             }
             else
             {
@@ -43,6 +44,6 @@ namespace PwdMngrWasm.Pages
             StateHasChanged();
         }
 
-        private void Return() => NavigationManager.NavigateTo("/", forceLoad: false);
+        private void Return() => NavigationManager.NavigateTo("/PW9", forceLoad: false);
     }
 }

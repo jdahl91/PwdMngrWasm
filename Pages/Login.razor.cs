@@ -32,7 +32,8 @@ namespace PwdMngrWasm.Pages
                 LoginForm = new();
                 return;
             }
-            NavigationManager.NavigateTo("/", forceLoad: false);
+            // Testing the navigation in production
+            NavigationManager.NavigateTo("/PW9", forceLoad: false);
         }
 
         private async Task ResetWarning()

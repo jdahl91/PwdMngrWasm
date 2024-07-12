@@ -42,9 +42,9 @@ namespace PwdMngrWasm.Services
             var userGuidString = loginResponse?.UserGuid;
             //var userGuid = Guid.Parse(userGuidString);
 
-            // for debugging
+            // for debugging, probably remove later
             if (!Guid.TryParseExact(userGuidString, "D", out Guid userGuid)) return false;
-            else Console.WriteLine(userGuid.ToString());
+            else Console.WriteLine("Logged from authService: " + userGuid.ToString());
 
             if (string.IsNullOrEmpty(jwtToken) || string.IsNullOrEmpty(refreshToken))
                 return false;

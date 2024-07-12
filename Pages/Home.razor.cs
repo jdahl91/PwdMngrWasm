@@ -54,7 +54,8 @@ namespace PwdMngrWasm.Pages
             }
         }
 
-        private void AddEntry() => NavigationManager.NavigateTo("/add", forceLoad: false);
+        // Testing the navigation in production
+        private void AddEntry() => NavigationManager.NavigateTo("/PW9/add", forceLoad: false);
 
         private void FilterEntries()
         {
