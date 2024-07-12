@@ -30,7 +30,7 @@ namespace PwdMngrWasm.Layout
             var success = await AuthenticationService.LogoutAsync();
             var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
 
-            if (success && uri.PathAndQuery == "/")
+            if (success && uri.PathAndQuery == "/PW9")
             {
                 StateHasChanged();
             }
@@ -40,11 +40,8 @@ namespace PwdMngrWasm.Layout
             }
             else
             {
-                // TODO : Make sure we navigate to the correct page, "/" was wrong since github pages is hosted in a subdirectory
-                NavigationManager.NavigateTo("/", forceLoad: false);
+                NavigationManager.NavigateTo("/PW9", forceLoad: false);
             }
-            //MainLayout.DrawerToggle(); 
-            //NavigationManager.NavigateTo("/", forceLoad: false);
         }
     }
 }

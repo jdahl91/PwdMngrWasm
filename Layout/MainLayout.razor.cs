@@ -30,15 +30,15 @@ namespace PwdMngrWasm.Layout
             // var parameters = new DialogParameters<PasswordEntry> { { "Entry", (object)entry } };
 
             var dialog = await Dialog.ShowAsync<TopRightDialog>(string.Empty, options); // parameters,
-            var result = await dialog.Result;
+            //var result = await dialog.Result;
 
-            if (!result.Canceled)
-            {
+            ////if (!result.Canceled)
+            //{
                 // _entries = GetHardcodedEntries("updated");
                 // _searchText = string.Empty;
                 // FilterEntries();
                 // StateHasChanged();
-            }
+            //}
         }
     }
 }
